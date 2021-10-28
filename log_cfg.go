@@ -45,31 +45,31 @@ func OutPutCfgOption(t OutputType) CfgOption {
 	}
 }
 
-func WCCfgOption(wc io.WriteCloser) CfgOption {
+func CfgOptionWC(wc io.WriteCloser) CfgOption {
 	return func(opt *logCfg) {
 		opt.wc = wc
 	}
 }
 
-func DirCfgOption(dir string) CfgOption {
+func CfgOptionDir(dir string) CfgOption {
 	return func(opt *logCfg) {
 		opt.dir = dir
 	}
 }
 
-func FilePrefixCfgOption(filePrefix string) CfgOption {
+func CfgOptionFilePrefix(filePrefix string) CfgOption {
 	return func(opt *logCfg) {
 		opt.filePrefix = filePrefix
 	}
 }
 
-func ServiceCfgOption(service string) CfgOption {
+func CfgOptionService(service string) CfgOption {
 	return func(opt *logCfg) {
 		opt.service = service
 	}
 }
 
-func ChannelSizeCfgOption(logChannelSize int) CfgOption {
+func CfgOptionChannelSize(logChannelSize int) CfgOption {
 	return func(opt *logCfg) {
 		opt.logChannelSize = logChannelSize
 	}

@@ -5,7 +5,7 @@ import (
 )
 
 func TestInitLogger(t *testing.T) {
-	InitLogger(nil)
+	InitLogger(NewFileLogger())
 	Debug("fasfaf%s", "gsgggggggggggggggggggggggggggggsgsgsgsg")
 	Info("fasfaf%s", "gsgggggggggggggggggggggggggggggsgsgsgsg")
 	Warn("fasfaf%s", "gsgggggggggggggggggggggggggggggsgsgsgsg")
