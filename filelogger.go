@@ -7,5 +7,6 @@ func NewFileLogger(opts ...CfgOption) Logger {
 		f(cfg)
 	}
 	cfg.logOutputType = OutputTypeFile
+
 	return newXLog(cfg)
 }
