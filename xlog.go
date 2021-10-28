@@ -3,9 +3,8 @@ package log
 import (
 	"bytes"
 	"fmt"
-	"gitee.com/fenleng/flyfisher/core/hack"
+	"github.com/fengleng/go-common/core/hack"
 	log2 "log"
-	"runtime"
 	"sync"
 
 	"io"
@@ -19,33 +18,20 @@ const (
 )
 
 var (
-	defaultService     = "XLog"
-	defaultLevel       = levelTextArray[DebugLevel]
-	defaultLogDir      string
-	defaultSep         string
-	defaultLogFileName = "xlog"
+	defaultLogDir string
+	defaultSep    string
 )
 
-func init() {
-	if runtime.GOOS == "windows" {
-		defaultSep = `\`
-		defaultLogDir = `c:\fl\xlog`
-	} else {
-		defaultSep = `/`
-		defaultLogDir = `/var/log/fl/xlog`
-	}
-}
-
 type XLog struct {
-	level int
+	level Level
 
 	skip     int
 	hostname string
 	service  string
 
 	logTextChan chan string
-	isLogFile   bool
-	w           io.WriteCloser
+	outputType  OutputType
+	wc          io.WriteCloser
 	dir         string
 	sep         string
 	fileName    string
@@ -55,51 +41,24 @@ type XLog struct {
 	openLock sync.Mutex
 }
 
-func NewXLog(cfg map[string]string) *XLog {
+func newXLog(cfg *logCfg) *XLog {
 	if cfg == nil {
-		cfg = make(map[string]string)
+		cfg = defaultLogCfg
 	}
-	_, ok := cfg["service"]
-	if !ok {
-		cfg["service"] = defaultService
-	}
-	_, ok = cfg["level"]
-	if !ok {
-		cfg["level"] = defaultLevel
-	}
-	level := LevelFromStr(cfg["level"])
+
 	hostname, _ := os.Hostname()
 
-	_, isLogFile := cfg["isLogFile"]
-	if isLogFile {
-		_, ok = cfg["dir"]
-		if !ok {
-			cfg["dir"] = defaultLogDir
-		}
-		_, ok = cfg["logFileName"]
-		if !ok {
-			cfg["logFileName"] = defaultLogFileName
-		}
-	}
-	var (
-		wc = os.Stdout
-	)
 	x := &XLog{
-		level:       level,
+		level:       cfg.logLevel,
 		skip:        defaultSkip,
-		service:     cfg["service"],
+		service:     cfg.service,
 		hostname:    hostname,
-		logTextChan: make(chan string, 5000),
-		isLogFile:   isLogFile,
-		dir:         cfg["dir"],
-		fileName:    cfg["logFileName"],
+		logTextChan: make(chan string, cfg.logChannelSize),
+		outputType:  cfg.logOutputType,
+		dir:         cfg.dir,
+		fileName:    cfg.filePrefix,
 		sep:         defaultSep,
-		//curHour: time.Now().Hour(),
-		//curHourTime: time.Now().Format("2006010215"),
-		w: wc,
-	}
-	if x.isLogFile {
-		x.reopen()
+		wc:          cfg.wc,
 	}
 	go x.Flush()
 	return x
@@ -118,11 +77,15 @@ func (x *XLog) write(logText string) {
 	if x.needReopen() {
 		x.reopen()
 	}
-	x.w.Write(hack.Slice(logText))
+	_, err := x.wc.Write(hack.Slice(logText))
+	if err != nil {
+		log2.Println(err)
+		return
+	}
 }
 
 func (x *XLog) needReopen() bool {
-	return x.isLogFile && x.curHour != time.Now().Hour()
+	return x.outputType == OutputTypeFile && x.curHour != time.Now().Hour()
 }
 
 func (x *XLog) reopen() {
@@ -143,45 +106,45 @@ func (x *XLog) reopen() {
 			panic(err.Error())
 		}
 	}
-	x.w = file
+	x.wc = file
 }
 
 func (x *XLog) Debug(txt string, a ...interface{}) {
-	if x.level > DebugLevel {
+	if x.level > DEBUG {
 		return
 	}
-	x.formatLogAndWriteChan(formatValue(txt, a...), DebugLevel)
+	x.formatLogAndWriteChan(formatValue(txt, a...), DEBUG)
 }
 
 func (x *XLog) Info(txt string, a ...interface{}) {
-	if x.level > InfoLevel {
+	if x.level > INFO {
 		return
 	}
-	x.formatLogAndWriteChan(formatValue(txt, a...), InfoLevel)
+	x.formatLogAndWriteChan(formatValue(txt, a...), INFO)
 }
 
 func (x *XLog) Warn(txt string, a ...interface{}) {
-	if x.level > WarnLevel {
+	if x.level > WARN {
 		return
 	}
-	x.formatLogAndWriteChan(formatValue(txt, a...), WarnLevel)
+	x.formatLogAndWriteChan(formatValue(txt, a...), WARN)
 }
 
 func (x *XLog) Error(txt string, a ...interface{}) {
-	if x.level > ErrorLevel {
+	if x.level > ERROR {
 		return
 	}
-	x.formatLogAndWriteChan(formatValue(txt, a...), ErrorLevel)
+	x.formatLogAndWriteChan(formatValue(txt, a...), ERROR)
 }
 
 func (x *XLog) Fatal(txt string, a ...interface{}) {
-	if x.level > FatalLevel {
+	if x.level > FATAL {
 		return
 	}
-	x.formatLogAndWriteChan(formatValue(txt, a...), FatalLevel)
+	x.formatLogAndWriteChan(formatValue(txt, a...), FATAL)
 }
 
-func (x *XLog) formatLogAndWriteChan(body *string, level int) {
+func (x *XLog) formatLogAndWriteChan(body *string, level Level) {
 	var buffer bytes.Buffer
 
 	buffer.WriteString("[")

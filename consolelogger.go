@@ -1,20 +1,10 @@
 package log
 
-import (
-	"gitee.com/fenleng/flyfisher/model"
-)
-
-func NewConsoleLogger(m *model.LogCfg) Logger {
-	cfg := make(map[string]string)
-	if m == nil {
-		m = &model.LogCfg{}
+func NewConsoleLogger(opts ...CfgOption) Logger {
+	cfg := defaultLogCfg
+	for _, f := range opts {
+		f(cfg)
 	}
-	if m.Level != "" {
-		cfg["level"] = m.Level
-	}
-
-	if m.Service != "" {
-		cfg["service"] = m.Service
-	}
-	return NewXLog(cfg)
+	cfg.logOutputType = OutputTypeStd
+	return newXLog(cfg)
 }

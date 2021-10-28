@@ -1,7 +1,5 @@
 package log
 
-import "gitee.com/fenleng/flyfisher/model"
-
 type Logger interface {
 	Debug(format string, a ...interface{})
 	Info(format string, a ...interface{})
@@ -15,19 +13,14 @@ var (
 )
 
 func init() {
-	logger = NewConsoleLogger(nil)
+	logger = NewConsoleLogger()
 }
 
-func InitLogger(m *model.LogCfg) {
-	if m == nil {
-		m = &model.LogCfg{}
+func InitLogger(lg Logger) {
+	if lg == nil {
+		return
 	}
-	var lg Logger
-	if m.IsLogFile {
-		lg = NewFileLogger(m)
-	} else {
-		lg = NewConsoleLogger(m)
-	}
+
 	logger = lg
 }
 

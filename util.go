@@ -9,50 +9,50 @@ import (
 	"strings"
 )
 
-const (
-	DebugLevel = iota
-	InfoLevel
-	WarnLevel
-	ErrorLevel
-	FatalLevel
-)
+//const (
+//	DebugLevel = iota
+//	InfoLevel
+//	WarnLevel
+//	ErrorLevel
+//	FatalLevel
+//)
+//
+//// log skip num
+//const (
+//	XLogDefSkipNum = 4
+//)
 
-// log skip num
-const (
-	XLogDefSkipNum = 4
-)
-
-var (
-	levelTextArray = []string{
-		DebugLevel: "DEBUG",
-		InfoLevel:  "INFO",
-		WarnLevel:  "WARN",
-		ErrorLevel: "TRACE",
-		FatalLevel: "FATAL",
-	}
-)
-
-// LevelFromStr get log level from level string
-func LevelFromStr(level string) int {
-	resultLevel := DebugLevel
-	levelLower := strings.ToLower(level)
-	switch levelLower {
-	case "debug":
-		resultLevel = DebugLevel
-	case "info":
-		resultLevel = InfoLevel
-	case "warn":
-		resultLevel = WarnLevel
-	case "error":
-		resultLevel = ErrorLevel
-	case "fatal":
-		resultLevel = FatalLevel
-	default:
-		resultLevel = InfoLevel
-	}
-
-	return resultLevel
-}
+//var (
+//	levelTextArray = []string{
+//		DebugLevel: "DEBUG",
+//		InfoLevel:  "INFO",
+//		WarnLevel:  "WARN",
+//		ErrorLevel: "TRACE",
+//		FatalLevel: "FATAL",
+//	}
+//)
+//
+//// LevelFromStr get log level from level string
+//func LevelFromStr(level string) int {
+//	resultLevel := DebugLevel
+//	levelLower := strings.ToLower(level)
+//	switch levelLower {
+//	case "debug":
+//		resultLevel = DebugLevel
+//	case "info":
+//		resultLevel = InfoLevel
+//	case "warn":
+//		resultLevel = WarnLevel
+//	case "error":
+//		resultLevel = ErrorLevel
+//	case "fatal":
+//		resultLevel = FatalLevel
+//	default:
+//		resultLevel = InfoLevel
+//	}
+//
+//	return resultLevel
+//}
 
 func getRuntimeInfo(skip int) (function, filename string, lineno int) {
 	function = "???"
