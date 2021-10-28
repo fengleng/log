@@ -18,8 +18,7 @@ const (
 )
 
 var (
-	defaultLogDir string
-	defaultSep    string
+	defaultSep string
 )
 
 type XLog struct {

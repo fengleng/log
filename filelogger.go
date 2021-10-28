@@ -1,7 +1,8 @@
 package log
 
 import (
-	"github.com/fengleng/go-common/fl_file"
+	"github.com/fengleng/go-common/file"
+	"path/filepath"
 )
 
 func NewFileLogger(opts ...CfgOption) Logger {
@@ -11,8 +12,6 @@ func NewFileLogger(opts ...CfgOption) Logger {
 		f(cfg)
 	}
 	cfg.logOutputType = OutputTypeFile
-
-	//fl_file.
 
 	return newXLog(cfg)
 }
