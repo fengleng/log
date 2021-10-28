@@ -6,7 +6,7 @@ import (
 )
 
 func TestInitLogger(t *testing.T) {
-	InitLogger(NewFileLogger())
+	//InitLogger(NewFileLogger())
 	for i := 0; i < 1000; i++ {
 		Debug("fasfaf%s", "gsgggggggggggggggggggggggggggggsgsgsgsg")
 		Info("fasfaf%s", "gsgggggggggggggggggggggggggggggsgsgsgsg")
