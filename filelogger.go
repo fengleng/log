@@ -1,8 +1,7 @@
 package log
 
 import (
-	"github.com/fengleng/go-common/file"
-	"path/filepath"
+	"github.com/fengleng/go-common/fileutil"
 )
 
 func NewFileLogger(opts ...CfgOption) Logger {
@@ -12,6 +11,8 @@ func NewFileLogger(opts ...CfgOption) Logger {
 		f(cfg)
 	}
 	cfg.logOutputType = OutputTypeFile
+
+	utils.FileExist()
 
 	return newXLog(cfg)
 }
