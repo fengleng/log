@@ -151,6 +151,10 @@ func (x *XLog) formatLogAndWriteChan(body *string, level Level) {
 	buffer.WriteString("] ")
 
 	buffer.WriteString("[")
+	buffer.WriteString(level.String())
+	buffer.WriteString("] ")
+
+	buffer.WriteString("[")
 	buffer.WriteString(x.hostname)
 	buffer.WriteString("] ")
 
@@ -165,5 +169,6 @@ func (x *XLog) formatLogAndWriteChan(body *string, level Level) {
 
 	buffer.WriteString(*body)
 	buffer.WriteString("\n")
+
 	x.logTextChan <- colors[level](buffer.String())
 }

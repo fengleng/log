@@ -2,6 +2,7 @@ package log
 
 import (
 	"github.com/fengleng/go-common/fileutil"
+	"os"
 )
 
 func NewFileLogger(opts ...CfgOption) Logger {
@@ -12,7 +13,10 @@ func NewFileLogger(opts ...CfgOption) Logger {
 	}
 	cfg.logOutputType = OutputTypeFile
 
-	utils.FileExist()
+	if !fileutil.FileExists(cfg.dir) {
+		err := os.MkdirAll(cfg.dir, 0666)
+		panic(err)
+	}
 
 	return newXLog(cfg)
 }

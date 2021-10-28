@@ -9,7 +9,7 @@ func TestNewXLog(t *testing.T) {
 }
 
 func TestNewConsoleLogger(t *testing.T) {
-	log := NewConsoleLogger(nil)
+	log := NewConsoleLogger()
 	//log := xlog.NewXLog(nil)
 	log.Debug("fasfaf%s", "gsgggggggggggggggggggggggggggggsgsgsgsg")
 	log.Info("fasfaf%s", "gsgggggggggggggggggggggggggggggsgsgsgsg")

@@ -14,15 +14,15 @@ func (l Level) String() string {
 	levelStr := "INFO"
 	switch l {
 	case DEBUG:
-		levelStr = "DEBUG"
+		levelStr = "DBG"
 	case INFO:
-		levelStr = "INFO"
+		levelStr = "INF"
 	case WARN:
-		levelStr = "WARN"
+		levelStr = "WAR"
 	case ERROR:
-		levelStr = "ERROR"
+		levelStr = "ERR"
 	case FATAL:
-		levelStr = "FATAL"
+		levelStr = "FAT"
 	}
 	return levelStr
 }
