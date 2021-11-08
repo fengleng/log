@@ -15,6 +15,10 @@ func NewFileLogger(opts ...CfgOption) Logger {
 
 	if !fileutil.FileExists(cfg.dir) {
 		err := os.MkdirAll(cfg.dir, 0666)
+		if err != nil {
+			logger.Error("%v",err)
+			panic(err)
+		}
 		panic(err)
 	}
 
